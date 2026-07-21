@@ -1,6 +1,6 @@
 # Topology-Aware Gang Scheduling for GPU Clusters
 
-*Design study — CoreWeave virtual onsite prep*
+*Design study*
 
 ---
 
