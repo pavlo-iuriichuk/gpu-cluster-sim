@@ -1,0 +1,73 @@
+tenants:
+- tenant_id: org-blue
+  scope: org
+  parent_id: null
+  quota:
+    max_gpus: 40
+  rate_limit:
+    max_submissions: 20
+    window_s: 3600.0
+    burst: 2
+- tenant_id: team-blue-ml
+  scope: team
+  parent_id: org-blue
+  quota:
+    max_gpus: 40
+  rate_limit:
+    max_submissions: 15
+    window_s: 3600.0
+    burst: 1
+- tenant_id: user-blue-1
+  scope: user
+  parent_id: team-blue-ml
+  quota:
+    max_gpus: 20
+  rate_limit:
+    max_submissions: 5
+    window_s: 3600.0
+    burst: 1
+- tenant_id: user-blue-2
+  scope: user
+  parent_id: team-blue-ml
+  quota:
+    max_gpus: 20
+  rate_limit:
+    max_submissions: 5
+    window_s: 3600.0
+    burst: 1
+- tenant_id: org-red
+  scope: org
+  parent_id: null
+  quota:
+    max_gpus: 16
+  rate_limit:
+    max_submissions: 10
+    window_s: 3600.0
+    burst: 1
+- tenant_id: team-red-infra
+  scope: team
+  parent_id: org-red
+  quota:
+    max_gpus: 16
+  rate_limit:
+    max_submissions: 8
+    window_s: 3600.0
+    burst: 1
+- tenant_id: user-red-1
+  scope: user
+  parent_id: team-red-infra
+  quota:
+    max_gpus: 8
+  rate_limit:
+    max_submissions: 3
+    window_s: 3600.0
+    burst: 0
+- tenant_id: user-red-2
+  scope: user
+  parent_id: team-red-infra
+  quota:
+    max_gpus: 8
+  rate_limit:
+    max_submissions: 3
+    window_s: 3600.0
+    burst: 0

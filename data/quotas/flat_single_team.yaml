@@ -1,0 +1,18 @@
+tenants:
+- tenant_id: org-startup
+  scope: org
+  parent_id: null
+- tenant_id: team-eng
+  scope: team
+  parent_id: org-startup
+  quota:
+    max_gpus: 64
+- tenant_id: user-dana
+  scope: user
+  parent_id: team-eng
+- tenant_id: user-eve
+  scope: user
+  parent_id: team-eng
+- tenant_id: user-frank
+  scope: user
+  parent_id: team-eng
