@@ -13,30 +13,33 @@ trace back to a specific paragraph there.
 
 ## Commands
 
-There is no build step, linter, or test suite configured yet (`pytest` is
-listed in `requirements.txt` but no tests exist — verification so far has
-been ad hoc scripts run against the sample data). The package is not
-pip-installed anywhere; run everything from the repo root with `PYTHONPATH=.`:
+There is no build step or linter configured. The package is not
+pip-installed anywhere; there's a `pytest.ini` with `pythonpath = .`, so
+`pytest` works directly from the repo root, but any ad hoc script still
+needs `PYTHONPATH=.`.
 
 ```bash
-pip install -r requirements.txt
+pip install -r requirements-dev.txt   # runtime deps + pytest/pytest-cov
+
+pytest                                 # run the full suite (tests/)
+pytest tests/test_allocation.py        # a single file
+pytest tests/test_allocation.py::test_try_allocate_is_all_or_nothing_when_it_does_not_fit  # a single test
+pytest --cov=gpu_cluster_sim --cov-report=term-missing   # coverage
 
 # regenerate the sample topologies under data/ (single_az, multi_az_region, datacenter_mixed_gpus)
 PYTHONPATH=. python3 scripts/generate_sample_data.py
 
 # regenerate the sample quota/rate-limit policies under data/quotas/
 PYTHONPATH=. python3 scripts/generate_sample_quotas.py
-
-# ad hoc verification, e.g.
-PYTHONPATH=. python3 -c "
-from gpu_cluster_sim.engine import ClusterTopology
-t = ClusterTopology.load('graphml', 'data/single_az/topology.graphml')
-print(t.graph.number_of_nodes(), t.graph.number_of_edges())
-"
 ```
 
-If a test suite is added later, prefer standard `pytest` conventions
-(`tests/test_*.py`, `pytest path/to/test_file.py::test_name` for a single test).
+`tests/conftest.py` has two fixtures nearly every test file builds on:
+`small_topology` (a fast, deterministic 2-spine/2-leaf/4-node/16-GPU
+fabric built with the same `populate_pod` primitive as the real samples)
+and `make_job` (a `JobRequest` factory with sensible defaults). Prefer
+these over hand-building a topology or job in a new test, and over
+depending on the generated files under `data/` (regenerable output, not a
+fixture).
 
 ## Architecture
 
