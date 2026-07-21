@@ -1,0 +1,26 @@
+from typing import NamedTuple, Tuple
+
+
+class Allocation(NamedTuple):
+    """A granted, atomic gang allocation — every running job holds exactly
+    one of these, or none at all; there is no partial-allocation state (see
+    "Why gang scheduling is non-negotiable" in
+    docs/topology-aware-gang-scheduling.md). `gpu_ids` is rank-ordered, not
+    just a set: rank i is the i-th collective rank, grouped by node and
+    ordered by rail index within each node, so a ring all-reduce stays
+    NVLink-local as long as possible before crossing the fabric.
+    """
+
+    job_id: str
+    gpu_ids: Tuple[str, ...]
+    node_ids: Tuple[str, ...]
+    allocated_at: float
+
+
+class LedgerSnapshot(NamedTuple):
+    """An immutable point-in-time copy of an `AllocationLedger`, safe to
+    hand to telemetry/reporting code without it changing underfoot.
+    """
+
+    gpu_to_job: Tuple[Tuple[str, str], ...]
+    allocations: Tuple[Allocation, ...]

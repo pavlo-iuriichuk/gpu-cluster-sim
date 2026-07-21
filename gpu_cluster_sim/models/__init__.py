@@ -1,3 +1,5 @@
+from .allocation import Allocation, LedgerSnapshot
+from .deallocation import DeallocationReason, DeallocationRecord
 from .gpu import GPU, GPUModel
 from .job import (
     CollectivePattern,
@@ -11,6 +13,10 @@ from .node import Node, NodeHealth
 from .telemetry import LinkTelemetry, NodeTelemetry
 
 __all__ = [
+    "Allocation",
+    "LedgerSnapshot",
+    "DeallocationReason",
+    "DeallocationRecord",
     "GPU",
     "GPUModel",
     "Node",
