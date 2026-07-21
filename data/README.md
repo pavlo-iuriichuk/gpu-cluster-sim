@@ -40,3 +40,15 @@ way a real fleet accumulates over time: 120 H100 + 120 A100 + 40 A6000 =
 smaller, cheaper node shape (4 GPUs/node instead of 8, less host RAM/NVMe)
 to reflect that these are typically inference/dev boxes, not training
 nodes.
+
+## quotas/example_policy.yaml
+
+An org -> team -> user quota/rate-limit policy for `QuotaPolicy`
+(`gpu_cluster_sim.engine.quota_policy`), exported via the `yaml` format in
+`gpu_cluster_sim/engine/quota_formats/`. One org (256 GPUs) with two teams
+(research: 160, infra: 96); each user has a generous personal ceiling, so
+the team quota is the actual limiter and any one user can borrow the
+team's full idle quota (see `QuotaLedger.has_capacity` for the ancestor-
+chain enforcement that makes this work). Submission rate limits are set at
+the org, team, and one user level to show all three being enforced at
+once. Load with `QuotaPolicy.load("yaml", "data/quotas/example_policy.yaml")`.

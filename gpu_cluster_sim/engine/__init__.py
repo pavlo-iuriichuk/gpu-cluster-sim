@@ -31,6 +31,15 @@ from .risk import (  # noqa: E402  (must come after allocation/checkpointing, ri
     preemption_probability,
     unprotected_work_s,
 )
+from .quota_policy import QuotaPolicy  # noqa: E402
+from .quota_formats import (  # noqa: E402  (must come after QuotaPolicy, quota_formats imports it)
+    QuotaConfigFormat,
+    YAMLQuotaFormat,
+    available_formats as available_quota_formats,
+    get_format as get_quota_format,
+    register_format as register_quota_format,
+)
+from .quotas import QuotaLedger, RateLimiter  # noqa: E402  (must come after QuotaPolicy, quotas imports it)
 
 __all__ = [
     "ClusterTopology",
@@ -58,4 +67,12 @@ __all__ = [
     "preemption_probability",
     "unprotected_work_s",
     "expected_data_loss_s",
+    "QuotaPolicy",
+    "QuotaConfigFormat",
+    "YAMLQuotaFormat",
+    "register_quota_format",
+    "get_quota_format",
+    "available_quota_formats",
+    "QuotaLedger",
+    "RateLimiter",
 ]

@@ -1,0 +1,43 @@
+tenants:
+- tenant_id: org-acme
+  scope: org
+  parent_id: null
+  quota:
+    max_gpus: 256
+  rate_limit:
+    max_submissions: 50
+    window_s: 3600.0
+    burst: 10
+- tenant_id: team-research
+  scope: team
+  parent_id: org-acme
+  quota:
+    max_gpus: 160
+  rate_limit:
+    max_submissions: 20
+    window_s: 3600.0
+    burst: 5
+- tenant_id: team-infra
+  scope: team
+  parent_id: org-acme
+  quota:
+    max_gpus: 96
+- tenant_id: user-alice
+  scope: user
+  parent_id: team-research
+  quota:
+    max_gpus: 160
+  rate_limit:
+    max_submissions: 10
+    window_s: 3600.0
+    burst: 2
+- tenant_id: user-bob
+  scope: user
+  parent_id: team-research
+  quota:
+    max_gpus: 160
+- tenant_id: user-carol
+  scope: user
+  parent_id: team-infra
+  quota:
+    max_gpus: 96

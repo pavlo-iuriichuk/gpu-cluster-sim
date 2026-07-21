@@ -11,6 +11,7 @@ from .job import (
 )
 from .network import LeafSwitch, LinkMetrics, LinkType, RailSwitch, SpineSwitch
 from .node import Node, NodeHealth
+from .quota import Quota, RateLimit, Tenant, TenantScope
 from .telemetry import CheckpointTelemetry, LinkTelemetry, NodeTelemetry
 
 __all__ = [
@@ -36,4 +37,8 @@ __all__ = [
     "NodeTelemetry",
     "LinkTelemetry",
     "CheckpointTelemetry",
+    "TenantScope",
+    "Tenant",
+    "Quota",
+    "RateLimit",
 ]
