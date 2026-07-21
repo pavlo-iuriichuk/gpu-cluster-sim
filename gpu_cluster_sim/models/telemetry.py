@@ -26,3 +26,14 @@ class NodeTelemetry(NamedTuple):
     temperature_c: float
     power_draw_w: float
     health: NodeHealth = NodeHealth.HEALTHY
+
+
+class CheckpointTelemetry(NamedTuple):
+    """A point-in-time reading of one checkpoint write's cost — feeds both
+    the checkpointing-overhead calculation (time spent checkpointing vs.
+    training) and the optimal-interval estimate in `engine.checkpointing`.
+    """
+
+    duration_s: float
+    size_gb: float
+    throughput_gbps: float

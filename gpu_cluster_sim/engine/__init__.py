@@ -25,6 +25,12 @@ from .paths import (  # noqa: E402  (must come after ClusterTopology, paths impo
     k_shortest_paths,
     shortest_path,
 )
+from .checkpointing import CheckpointLedger, optimal_checkpoint_interval_s  # noqa: E402
+from .risk import (  # noqa: E402  (must come after allocation/checkpointing, risk imports both)
+    expected_data_loss_s,
+    preemption_probability,
+    unprotected_work_s,
+)
 
 __all__ = [
     "ClusterTopology",
@@ -47,4 +53,9 @@ __all__ = [
     "shortest_path",
     "k_shortest_paths",
     "all_paths",
+    "CheckpointLedger",
+    "optimal_checkpoint_interval_s",
+    "preemption_probability",
+    "unprotected_work_s",
+    "expected_data_loss_s",
 ]

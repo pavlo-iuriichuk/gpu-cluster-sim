@@ -1,4 +1,5 @@
 from .allocation import Allocation, LedgerSnapshot
+from .checkpoint import Checkpoint
 from .deallocation import DeallocationReason, DeallocationRecord
 from .gpu import GPU, GPUModel
 from .job import (
@@ -10,11 +11,12 @@ from .job import (
 )
 from .network import LeafSwitch, LinkMetrics, LinkType, RailSwitch, SpineSwitch
 from .node import Node, NodeHealth
-from .telemetry import LinkTelemetry, NodeTelemetry
+from .telemetry import CheckpointTelemetry, LinkTelemetry, NodeTelemetry
 
 __all__ = [
     "Allocation",
     "LedgerSnapshot",
+    "Checkpoint",
     "DeallocationReason",
     "DeallocationRecord",
     "GPU",
@@ -33,4 +35,5 @@ __all__ = [
     "QoSClass",
     "NodeTelemetry",
     "LinkTelemetry",
+    "CheckpointTelemetry",
 ]

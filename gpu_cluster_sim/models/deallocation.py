@@ -1,6 +1,8 @@
 from enum import Enum
 from typing import NamedTuple, Tuple
 
+from .job import QoSClass
+
 
 class DeallocationReason(str, Enum):
     COMPLETED = "completed"  # job finished normally
@@ -20,6 +22,7 @@ class DeallocationRecord(NamedTuple):
     gpu_ids: Tuple[str, ...]
     node_ids: Tuple[str, ...]
     reason: DeallocationReason
+    qos_class: QoSClass
     allocated_at: float
     released_at: float
     held_duration_s: float

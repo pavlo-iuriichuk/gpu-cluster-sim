@@ -64,6 +64,7 @@ class AllocationLedger:
             gpu_ids=gpu_ids,
             node_ids=node_ids,
             allocated_at=timestamp if timestamp is not None else time.time(),
+            qos_class=job.qos_class,
         )
         for gpu_id in gpu_ids:
             self._gpu_to_job[gpu_id] = job.job_id
@@ -96,6 +97,7 @@ class AllocationLedger:
             gpu_ids=allocation.gpu_ids,
             node_ids=allocation.node_ids,
             reason=reason,
+            qos_class=allocation.qos_class,
             allocated_at=allocation.allocated_at,
             released_at=released_at,
             held_duration_s=released_at - allocation.allocated_at,

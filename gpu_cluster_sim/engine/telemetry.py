@@ -12,17 +12,19 @@ from collections import defaultdict
 from statistics import mean
 from typing import Callable, Dict, Iterable, List, Optional, Sequence, Tuple
 
-from ..models.telemetry import LinkTelemetry, NodeTelemetry
+from ..models.telemetry import CheckpointTelemetry, LinkTelemetry, NodeTelemetry
 
 EdgeKey = Tuple[str, str, int]
 NodeReading = Tuple[float, NodeTelemetry]
 LinkReading = Tuple[float, LinkTelemetry]
+CheckpointReading = Tuple[float, CheckpointTelemetry]
 
 
 class TelemetryStore:
     def __init__(self) -> None:
         self._node_history: Dict[str, List[NodeReading]] = defaultdict(list)
         self._link_history: Dict[EdgeKey, List[LinkReading]] = defaultdict(list)
+        self._checkpoint_history: Dict[str, List[CheckpointReading]] = defaultdict(list)
 
     def record_node(
         self, node_id: str, telemetry: NodeTelemetry, timestamp: Optional[float] = None
@@ -40,6 +42,11 @@ class TelemetryStore:
         edge_key = (u_id, v_id, key)
         self._link_history[edge_key].append((timestamp if timestamp is not None else time.time(), telemetry))
 
+    def record_checkpoint(
+        self, job_id: str, telemetry: CheckpointTelemetry, timestamp: Optional[float] = None
+    ) -> None:
+        self._checkpoint_history[job_id].append((timestamp if timestamp is not None else time.time(), telemetry))
+
     def latest_node(self, node_id: str) -> Optional[NodeTelemetry]:
         history = self._node_history.get(node_id)
         return history[-1][1] if history else None
@@ -53,6 +60,13 @@ class TelemetryStore:
 
     def link_history(self, u_id: str, v_id: str, key: int = 0) -> List[LinkReading]:
         return list(self._link_history.get((u_id, v_id, key), []))
+
+    def latest_checkpoint_telemetry(self, job_id: str) -> Optional[CheckpointTelemetry]:
+        history = self._checkpoint_history.get(job_id)
+        return history[-1][1] if history else None
+
+    def checkpoint_telemetry_history(self, job_id: str) -> List[CheckpointReading]:
+        return list(self._checkpoint_history.get(job_id, []))
 
     def aggregate_node_metric(
         self,
@@ -78,6 +92,20 @@ class TelemetryStore:
         values = [
             getattr(reading, field)
             for reading in (self.latest_link(*edge_key) for edge_key in edge_keys)
+            if reading is not None
+        ]
+        return agg(values) if values else None
+
+    def aggregate_checkpoint_metric(
+        self,
+        job_ids: Iterable[str],
+        field: str,
+        agg: Callable[[Sequence[float]], float] = mean,
+    ) -> Optional[float]:
+        """e.g. aggregate_checkpoint_metric(job_ids, "duration_s")"""
+        values = [
+            getattr(reading, field)
+            for reading in (self.latest_checkpoint_telemetry(jid) for jid in job_ids)
             if reading is not None
         ]
         return agg(values) if values else None
