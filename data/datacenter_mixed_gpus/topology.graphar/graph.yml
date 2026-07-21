@@ -1,0 +1,76 @@
+format: graphar-lite/v1
+vertices:
+  spine:
+    properties:
+    - spine_id
+    - pod_id
+    - port_count
+    - port_bandwidth_gbps
+    chunk_files:
+    - chunk0.parquet
+  leaf:
+    properties:
+    - leaf_id
+    - pod_id
+    - rack_id
+    - downlink_ports
+    - uplink_ports
+    - port_bandwidth_gbps
+    - oversubscription_ratio
+    chunk_files:
+    - chunk0.parquet
+  node:
+    properties:
+    - node_id
+    - rack_id
+    - leaf_id
+    - gpu_ids
+    - cpu_count
+    - host_ram_gb
+    - local_nvme_gb
+    - health
+    chunk_files:
+    - chunk0.parquet
+  gpu:
+    properties:
+    - gpu_id
+    - node_id
+    - rail_index
+    - model
+    - memory_gb
+    - nvlink_domain
+    chunk_files:
+    - chunk0.parquet
+edges:
+  spine_uplink:
+    properties:
+    - link_type
+    - bandwidth_gbps
+    - latency_us
+    - oversubscription_ratio
+    chunk_files:
+    - chunk0.parquet
+  leaf_uplink:
+    properties:
+    - link_type
+    - bandwidth_gbps
+    - latency_us
+    - oversubscription_ratio
+    chunk_files:
+    - chunk0.parquet
+  pcie:
+    properties:
+    - link_type
+    - bandwidth_gbps
+    - latency_us
+    - oversubscription_ratio
+    chunk_files:
+    - chunk0.parquet
+  nvlink:
+    properties:
+    - link_type
+    - bandwidth_gbps
+    - latency_us
+    - oversubscription_ratio
+    chunk_files:
+    - chunk0.parquet
