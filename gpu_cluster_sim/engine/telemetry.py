@@ -9,8 +9,9 @@ computed over either the latest snapshot or a time window.
 
 import time
 from collections import defaultdict
+from decimal import Decimal
 from statistics import mean
-from typing import Callable, Dict, Iterable, List, Optional, Sequence, Tuple
+from typing import Callable, Dict, Iterable, List, Optional, Sequence, Tuple, Union
 
 from ..models.telemetry import CheckpointTelemetry, LinkTelemetry, NodeTelemetry
 
@@ -18,6 +19,9 @@ EdgeKey = Tuple[str, str, int]
 NodeReading = Tuple[float, NodeTelemetry]
 LinkReading = Tuple[float, LinkTelemetry]
 CheckpointReading = Tuple[float, CheckpointTelemetry]
+# Telemetry fields are either a measured Decimal or a discrete int count
+# (ecc_errors, queue_depth, error_count) — aggregation works over either.
+Numeric = Union[int, Decimal]
 
 
 class TelemetryStore:
@@ -72,8 +76,8 @@ class TelemetryStore:
         self,
         node_ids: Iterable[str],
         field: str,
-        agg: Callable[[Sequence[float]], float] = mean,
-    ) -> Optional[float]:
+        agg: Callable[[Sequence[Numeric]], Numeric] = mean,
+    ) -> Optional[Numeric]:
         """e.g. aggregate_node_metric(nodes_in_rack, "temperature_c", max)"""
         values = [
             getattr(reading, field)
@@ -86,8 +90,8 @@ class TelemetryStore:
         self,
         edge_keys: Iterable[EdgeKey],
         field: str,
-        agg: Callable[[Sequence[float]], float] = mean,
-    ) -> Optional[float]:
+        agg: Callable[[Sequence[Numeric]], Numeric] = mean,
+    ) -> Optional[Numeric]:
         """e.g. aggregate_link_metric(topology.edges_of_type(LinkType.SPINE_UPLINK), "utilization")"""
         values = [
             getattr(reading, field)
@@ -100,8 +104,8 @@ class TelemetryStore:
         self,
         job_ids: Iterable[str],
         field: str,
-        agg: Callable[[Sequence[float]], float] = mean,
-    ) -> Optional[float]:
+        agg: Callable[[Sequence[Numeric]], Numeric] = mean,
+    ) -> Optional[Numeric]:
         """e.g. aggregate_checkpoint_metric(job_ids, "duration_s")"""
         values = [
             getattr(reading, field)

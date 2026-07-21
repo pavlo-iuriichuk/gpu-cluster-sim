@@ -7,6 +7,7 @@ overhead/optimal-interval math below are built on.
 
 import math
 import time
+from decimal import Decimal
 from typing import Dict, List, Optional, Tuple
 
 from ..models.checkpoint import Checkpoint
@@ -23,8 +24,8 @@ class CheckpointLedger:
         self,
         job_id: str,
         step: int,
-        size_gb: float,
-        duration_s: float,
+        size_gb: Decimal,
+        duration_s: Decimal,
         *,
         storage_uri: Optional[str] = None,
         timestamp: Optional[float] = None,
@@ -45,7 +46,7 @@ class CheckpointLedger:
         )
         existing.append(checkpoint)
 
-        throughput_gbps = (size_gb * 8.0 / duration_s) if duration_s > 0 else 0.0
+        throughput_gbps = (size_gb * 8 / duration_s) if duration_s > 0 else Decimal(0)
         self.telemetry.record_checkpoint(
             job_id,
             CheckpointTelemetry(duration_s=duration_s, size_gb=size_gb, throughput_gbps=throughput_gbps),
@@ -96,7 +97,7 @@ class CheckpointLedger:
             return None
         return 3600.0 / interval_s
 
-    def checkpoint_overhead_fraction(self, job_id: str) -> Optional[float]:
+    def checkpoint_overhead_fraction(self, job_id: str) -> Optional[Decimal]:
         """Fraction of wall-clock time spent writing checkpoints rather
         than training: mean(checkpoint duration) / mean(interval between
         checkpoints). `None` if there isn't enough history for either half.
@@ -107,7 +108,11 @@ class CheckpointLedger:
         durations = [telemetry.duration_s for _, telemetry in self.telemetry.checkpoint_telemetry_history(job_id)]
         if not durations:
             return None
-        return (sum(durations) / len(durations)) / interval_s
+        mean_duration_s = sum(durations) / len(durations)
+        # interval_s comes from Checkpoint.created_at (float, like every
+        # other timestamp in the codebase) — convert via str() to avoid
+        # picking up float's binary-fraction noise in the Decimal result.
+        return mean_duration_s / Decimal(str(interval_s))
 
 
 def optimal_checkpoint_interval_s(mtbf_s: float, checkpoint_cost_s: float) -> float:
